@@ -1,6 +1,6 @@
 {
   "name": "avahi-nodeutils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Avahi utils",
   "main": "index.js",
   "scripts": {
@@ -34,5 +34,8 @@
     "gulp-typescript": "^2.13.6",
     "gulp-util": "^3.0.7",
     "mocha": "^3.0.2"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.6"
   }
 }
