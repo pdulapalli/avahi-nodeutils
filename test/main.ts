@@ -1,3 +1,3 @@
 import {setHostname} from "../index"
 
-setHostname('')
+setHostname('test')
