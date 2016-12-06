@@ -42,20 +42,21 @@ export function getHosts(): Promise<boolean> {
                 const newones = []
                 for (let i = 0; i < results.length; i++) {
                     if (results[i].ipv6) {
-                        results[i].ipv6=results[i].address
+                        results[i].ipv6 = results[i].address
 
                         for (let r = 0; r < results.length; r++) {
 
                             if (results[r].ipv4 && results[r].hostname === results[i].hostname) {
 
+
                                 results[i].ipv4 = results[r].address
-                            results[r].delete = true
+                                results[r].delete = true
 
 
                             }
                         }
-   
-   
+
+
                     }
                 }
 
