@@ -2,6 +2,20 @@ import * as Promise from "bluebird";
 
 import { exec } from "child_process"
 
+
+
+interface IAvahiHost {
+    interface: string;
+    ipv6?: string;
+    ipv4?: string;
+    hostname: string;
+    port: number;
+    txt: string;
+
+}
+
+
+
 export function setHostname(hostname: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
         exec('avahi-set-host-name ' + hostname, (err, stdout, stderr) => {
@@ -17,8 +31,8 @@ export function setHostname(hostname: string): Promise<boolean> {
 }
 
 
-export function getHosts(): Promise<boolean> {
-    return new Promise<any>((resolve, reject) => {
+export function getHosts(): Promise<IAvahiHost[]> {
+    return new Promise<IAvahiHost[]>((resolve, reject) => {
         const results = []
         exec('avahi-browse -a -r -t', (err, stdout, stderr) => {
             if (err) {
@@ -43,6 +57,7 @@ export function getHosts(): Promise<boolean> {
                 for (let i = 0; i < results.length; i++) {
                     if (results[i].ipv6) {
                         results[i].ipv6 = results[i].address
+                        results[i].port = parseInt(results[i].port)
 
                         for (let r = 0; r < results.length; r++) {
 
@@ -61,7 +76,7 @@ export function getHosts(): Promise<boolean> {
                 }
 
                 for (let i = 0; i < results.length; i++) {
-                    let newobj = Object.assign({}, results[i])
+                    let newobj = Object['assign']({}, results[i])
 
 
                     if (newobj.delete) {
@@ -75,6 +90,25 @@ export function getHosts(): Promise<boolean> {
             }
 
         })
+    })
+
+}
+export function whereHostNameIsLike(name: string): Promise<IAvahiHost[]> {
+    return new Promise<IAvahiHost[]>((resolve, reject) => {
+
+        getHosts().then((hosts) => { 
+            const hostlikes: IAvahiHost[] = []
+
+            for (let i = 0; i < hosts.length; i++) {
+                if (hosts[i].hostname['includes'](name)) {
+                    hostlikes.push(hosts[i])
+                }
+            }
+            resolve(hostlikes)
+        }).catch((err) => {
+            reject(err)
+        })
+
     })
 
 }
