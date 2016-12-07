@@ -11,6 +11,7 @@ interface IAvahiHost {
     hostname: string;
     port: number;
     txt: string;
+    mac: string;
 
 }
 
@@ -24,10 +25,8 @@ export function setHostname(hostname: string): Promise<boolean> {
             } else {
                 resolve(true)
             }
-
         })
     })
-
 }
 
 
@@ -43,11 +42,11 @@ export function getHosts(): Promise<IAvahiHost[]> {
                     const row: any = result[i]
                     if (row.includes("=") && (row.includes("IPv4") || row.includes("IPv6"))) {
                         const words = row.split(' ')
-                        let device = words[1]
+
                         if (row.includes("IPv4")) {
-                            results.push({ interface: device, ipv4: true, ipv6: false })
+                            results.push({ interface: words[1], ipv4: true, ipv6: false, mac:words[4].replace('[','').replace(']','') })
                         } else if (row.includes("IPv6")) {
-                            results.push({ interface: device, ipv6: true, ipv4: false })
+                            results.push({ interface: words[1], ipv6: true, ipv4: false, mac:words[4].replace('[','').replace(']','') })
                         }
                     } else if (row.includes("=")) {
                         results[results.length - 1][row.split('=')[0].replace(/ /g, '')] = row.split('[')[1].split(']')[0]
